@@ -9,7 +9,7 @@ import joblib
 import pandas as pd
 
 from eda import FEATURE_COLUMNS
-from train import DEFAULT_MODEL_PATH
+from train import DEFAULT_MODEL_PATH, HIGH_SCORE_MIN, LOW_SCORE_MAX
 
 
 def main() -> None:
@@ -45,15 +45,26 @@ def main() -> None:
         if 1 in classes:
             score = pipeline.predict_proba(features)[:, classes.index(1)]
             results["score_for_label_1"] = score
+            results["risk_band"] = [
+                "Low" if value < LOW_SCORE_MAX
+                else "Medium" if value < HIGH_SCORE_MIN
+                else "High"
+                for value in score
+            ]
     elif hasattr(pipeline, "decision_function"):
         results["score_for_label_1"] = pipeline.decision_function(features)
 
     args.output.parent.mkdir(parents=True, exist_ok=True)
     results.to_csv(args.output, index=False)
     print(f"Predictions written to: {args.output}")
-    print("predicted_HeartDisease is a predicted dataset class, not a diagnosis.")
+    print("predicted_HeartDisease is the predicted binary HeartDisease label from this dataset.")
     if "score_for_label_1" in results.columns:
-        print("score_for_label_1 is a model score for dataset label 1, not a clinical probability.")
+        print("score_for_label_1 is the model's score for dataset label 1.")
+    if "risk_band" in results.columns:
+        print("risk_band uses Low < 0.33, Medium >= 0.33 and < 0.67, High >= 0.67.")
+        print("These are project score bands, not clinically validated risk thresholds.")
+    elif "score_for_label_1" in results.columns:
+        print("No risk_band was created because the loaded model did not return class probabilities.")
 
 
 if __name__ == "__main__":
