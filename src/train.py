@@ -43,6 +43,11 @@ CATEGORICAL_COLUMNS = [
 NUMERIC_COLUMNS = [name for name in FEATURE_COLUMNS if name not in CATEGORICAL_COLUMNS]
 DEFAULT_MODEL_PATH = Path("models/heart_disease_pipeline.joblib")
 
+# Fixed project score bands for the model's score assigned to dataset label 1.
+# These do not represent clinically validated risk thresholds.
+LOW_SCORE_MAX = 0.33
+HIGH_SCORE_MIN = 0.67
+
 
 def build_preprocessor(scale_numeric: bool) -> ColumnTransformer:
     """Build transformers that are fitted only when the pipeline is fitted."""
@@ -148,6 +153,10 @@ def make_evaluation_markdown(
             "## Final held-out test results",
             "",
             *metric_lines,
+            "",
+            "## Score bands used by prediction",
+            "",
+            f"Risk bands are applied to the model's score for dataset label 1: Low (< {LOW_SCORE_MAX:.2f}), Medium (>= {LOW_SCORE_MAX:.2f} and < {HIGH_SCORE_MIN:.2f}), High (>= {HIGH_SCORE_MIN:.2f}). The model is trained on the binary target; these bands are applied afterward, not learned as three classes. The cutoffs are project score bands, not clinically validated risk thresholds. The test metrics above evaluate the binary target using the model's default prediction threshold.",
             "",
             "Confusion matrix with actual labels as rows (0, 1) and predictions as columns (0, 1):",
             "",
@@ -306,6 +315,11 @@ def main() -> None:
         "f1": float(f1_score(y_test, predictions, zero_division=0)),
         "roc_auc": safe_auc(y_test, scores),
         "confusion_matrix_labels_0_then_1": matrix.astype(int).tolist(),
+        "risk_band_thresholds_for_score_of_label_1": {
+            "low": {"max_exclusive": LOW_SCORE_MAX},
+            "medium": {"min_inclusive": LOW_SCORE_MAX, "max_exclusive": HIGH_SCORE_MIN},
+            "high": {"min_inclusive": HIGH_SCORE_MIN},
+        },
         "test_rows": int(len(y_test)),
         "training_rows": int(len(y_train)),
         "rows_excluded_for_missing_target": missing_target_rows,
