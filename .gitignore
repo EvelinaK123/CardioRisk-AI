@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+.env
+.python-version
+
+# User data and prediction outputs
+/data/heart.csv
+/data/my_new_rows.csv
+/reports/my_predictions.csv
+/reports/sample_predictions.csv
+
+# Fitted model artifacts
+/models/*.joblib
+/models/*.pkl
