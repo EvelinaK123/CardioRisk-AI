@@ -5,7 +5,7 @@ This is a beginner-friendly machine-learning project for the GitHub repository C
 - 1 means the dataset label is present.
 - 0 means the dataset label is absent.
 
-This is a dataset classification exercise. The output is not a heart attack prediction, medical diagnosis, or medical advice.
+The model is trained on a binary target and predicts the dataset's HeartDisease label. The prediction output also groups the model's score for label 1 into Low, Medium, and High bands. The CSV does not contain three risk labels, so these bands are applied to the score after training; they are not three classes learned by the model. The cutoffs are project score bands and are not clinically validated risk thresholds.
 
 ## Features used
 
@@ -67,7 +67,7 @@ The primary workflow is Codespaces. If you later choose to run a clone on your o
 
 - src/eda.py checks the expected column names, data types, missing values, exact duplicate rows, target balance, observed category values, numeric summaries, and suspicious values. It reports zero values in Cholesterol and zero values in RestingBP separately.
 - src/train.py creates a stratified train/test split. Stratified means both portions keep roughly the same class balance as the source data. It compares the two models with cross-validation using only the training portion, selects by mean training cross-validation balanced accuracy, fits the selected pipeline on all training rows, and evaluates on the held-out test rows.
-- src/predict.py loads the saved pipeline, checks that the 11 predictor columns are present, predicts the dataset label, and writes a results CSV. Additional input columns are ignored by the model.
+- src/predict.py loads the saved pipeline, checks that the 11 predictor columns are present, predicts the dataset label, and writes a results CSV. The output includes the binary class, the score for label 1 when available, and a Low/Medium/High risk_band when the pipeline returns probabilities. Additional input columns are ignored by the model.
 - .devcontainer/devcontainer.json configures a Python Codespace and installs the project requirements.
 - requirements.txt lists the Python libraries needed by the scripts.
 - .gitignore keeps the private training CSV and fitted model out of Git.
@@ -83,6 +83,16 @@ The inspection report records possible data issues but does not silently alter t
 - Actual missing predictor values are handled inside the training pipeline: numeric values use a median imputer, and categorical values use a most-frequent imputer. These imputers are fitted as part of cross-validation or on training data only.
 - Rows without a HeartDisease label cannot be used for supervised training. The EDA report counts them; training excludes only rows whose target label is missing.
 - The prediction script does not require a target column and never uses one as a predictor.
+
+## Low, Medium, and High score bands
+
+The prediction CSV adds a `risk_band` column using the model's score for dataset label 1:
+
+- **Low:** score below 0.33
+- **Medium:** score from 0.33 up to, but not including, 0.67
+- **High:** score of 0.67 or higher
+
+Exactly 0.33 is Medium; exactly 0.67 is High. The model itself still learns the two available target classes, 0 and 1. These three bands are applied afterward to organize the model score; the dataset contains no Low/Medium/High training labels. `predicted_HeartDisease` is still the binary class produced by the model's standard 0.50 cutoff, so it can differ from the three-band label. The cutoffs are simple project score bands, not clinically validated risk thresholds.
 
 ## Reading the evaluation
 
