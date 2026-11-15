@@ -54,6 +54,50 @@ CATEGORY_LABELS = {
     },
 }
 
+DEFAULT_PREDICTION_INPUT = {
+    "Age": 52,
+    "Sex": "F",
+    "ChestPainType": "ASY",
+    "RestingBP": 130,
+    "Cholesterol": 220,
+    "FastingBS": 0,
+    "RestingECG": "LVH",
+    "MaxHR": 160,
+    "ExerciseAngina": "N",
+    "Oldpeak": 0.0,
+    "ST_Slope": "Down",
+}
+
+EXAMPLE_PREDICTION_INPUTS = {
+    "Low": {
+        "Age": 35,
+        "Sex": "F",
+        "ChestPainType": "ATA",
+        "RestingBP": 118,
+        "Cholesterol": 230,
+        "FastingBS": 0,
+        "RestingECG": "Normal",
+        "MaxHR": 180,
+        "ExerciseAngina": "N",
+        "Oldpeak": 0.0,
+        "ST_Slope": "Up",
+    },
+    "Medium": DEFAULT_PREDICTION_INPUT,
+    "High": {
+        "Age": 67,
+        "Sex": "M",
+        "ChestPainType": "ASY",
+        "RestingBP": 150,
+        "Cholesterol": 220,
+        "FastingBS": 1,
+        "RestingECG": "ST",
+        "MaxHR": 110,
+        "ExerciseAngina": "Y",
+        "Oldpeak": 2.5,
+        "ST_Slope": "Flat",
+    },
+}
+
 PROTOTYPE_WARNING = (
     "Prototype only: this is not a certified medical tool and is not medical advice. "
     "Do not use its output to make health-care decisions."
@@ -72,7 +116,7 @@ st.markdown(
         --cardio-pink: #fab9bd;
         --cardio-red: #a92132;
         --cardio-deep-red: #861a29;
-        --cardio-soft-pink: #fff2f3;
+        --cardio-soft-pink: #ffe7e9;
         --cardio-text: #3f2529;
     }
     .stApp {
@@ -91,7 +135,7 @@ st.markdown(
     .hero {
         padding: 1.8rem 2rem;
         border-radius: 22px;
-        background: linear-gradient(115deg, var(--cardio-deep-red), #bd3445);
+        background: linear-gradient(115deg, var(--cardio-deep-red), #df7c88);
         color: #ffffff;
         margin-bottom: 1.1rem;
         box-shadow: 0 12px 32px rgba(134, 26, 41, 0.16);
@@ -177,6 +221,19 @@ st.markdown(
     div.stFormSubmitButton > button[kind="primary"]:hover {
         background: var(--cardio-deep-red);
         border-color: var(--cardio-deep-red);
+    }
+    div[data-testid="stButton"] button:not([kind="primary"]) {
+        background: #fff4f5;
+        border-color: var(--cardio-pink);
+        color: var(--cardio-deep-red);
+        border-radius: 10px;
+        min-height: 2.8rem;
+        font-weight: 700;
+    }
+    div[data-testid="stButton"] button:not([kind="primary"]):hover {
+        background: var(--cardio-pink);
+        border-color: var(--cardio-red);
+        color: var(--cardio-deep-red);
     }
     [data-testid="stAlert"],
     [data-testid="stAlertContainer"],
@@ -397,20 +454,60 @@ def render_prediction() -> None:
             st.code(str(exc))
         st.stop()
 
+    for field_name, default_value in DEFAULT_PREDICTION_INPUT.items():
+        st.session_state.setdefault(f"prediction_{field_name}", default_value)
+
+    st.markdown("#### Try a fictional example")
+    st.caption(
+        "Choose a button to fill the form with made-up values. Then click "
+        "Generate prototype result to see which project score band the model assigns."
+    )
+    sample_columns = st.columns(3)
+    for sample_column, band_name in zip(sample_columns, ("Low", "Medium", "High")):
+        with sample_column:
+            if st.button(
+                f"Load {band_name} example",
+                key=f"load_{band_name.lower()}_example",
+                use_container_width=True,
+            ):
+                for field_name, value in EXAMPLE_PREDICTION_INPUTS[band_name].items():
+                    st.session_state[f"prediction_{field_name}"] = value
+                st.session_state["loaded_example_band"] = band_name
+                st.rerun()
+
+    loaded_band = st.session_state.get("loaded_example_band")
+    if loaded_band:
+        st.caption(f"{loaded_band} example loaded. Click Generate prototype result below.")
+
     with st.form("prediction_form"):
         st.markdown("#### 1. Numeric measurements")
         first_row = st.columns(3)
         with first_row[0]:
             age = st.number_input(
-                "Age (years)", min_value=0, max_value=120, value=52, step=1
+                "Age (years)",
+                min_value=0,
+                max_value=120,
+                value=st.session_state["prediction_Age"],
+                step=1,
+                key="prediction_Age",
             )
         with first_row[1]:
             resting_bp = st.number_input(
-                "RestingBP (mmHg)", min_value=0, max_value=300, value=130, step=1
+                "RestingBP (mmHg)",
+                min_value=0,
+                max_value=300,
+                value=st.session_state["prediction_RestingBP"],
+                step=1,
+                key="prediction_RestingBP",
             )
         with first_row[2]:
             cholesterol = st.number_input(
-                "Cholesterol (mg/dL)", min_value=0, max_value=1000, value=220, step=1
+                "Cholesterol (mg/dL)",
+                min_value=0,
+                max_value=1000,
+                value=st.session_state["prediction_Cholesterol"],
+                step=1,
+                key="prediction_Cholesterol",
             )
 
         second_row = st.columns(3)
@@ -418,25 +515,29 @@ def render_prediction() -> None:
             fasting_bs = st.selectbox(
                 "Fasting blood sugar above 120 mg/dL",
                 options=[0, 1],
+                index=[0, 1].index(st.session_state["prediction_FastingBS"]),
                 format_func=lambda value: "No (0)" if value == 0 else "Yes (1)",
+                key="prediction_FastingBS",
             )
         with second_row[1]:
             max_hr = st.number_input(
                 "MaxHR (beats per minute)",
                 min_value=0,
                 max_value=250,
-                value=160,
+                value=st.session_state["prediction_MaxHR"],
                 step=1,
+                key="prediction_MaxHR",
             )
         with second_row[2]:
             oldpeak = st.number_input(
                 "Oldpeak",
                 min_value=-10.0,
                 max_value=10.0,
-                value=0.0,
+                value=st.session_state["prediction_Oldpeak"],
                 step=0.1,
                 format="%.1f",
                 help="Dataset measurement of exercise-related ST depression compared with rest.",
+                key="prediction_Oldpeak",
             )
 
         st.markdown("#### 2. Category choices")
@@ -445,19 +546,25 @@ def render_prediction() -> None:
             sex = st.selectbox(
                 "Sex",
                 options=list(CATEGORY_LABELS["Sex"]),
+                index=list(CATEGORY_LABELS["Sex"]).index(st.session_state["prediction_Sex"]),
                 format_func=lambda value: CATEGORY_LABELS["Sex"][value],
+                key="prediction_Sex",
             )
         with third_row[1]:
             chest_pain = st.selectbox(
                 "ChestPainType",
                 options=list(CATEGORY_LABELS["ChestPainType"]),
+                index=list(CATEGORY_LABELS["ChestPainType"]).index(st.session_state["prediction_ChestPainType"]),
                 format_func=lambda value: CATEGORY_LABELS["ChestPainType"][value],
+                key="prediction_ChestPainType",
             )
         with third_row[2]:
             resting_ecg = st.selectbox(
                 "RestingECG",
                 options=list(CATEGORY_LABELS["RestingECG"]),
+                index=list(CATEGORY_LABELS["RestingECG"]).index(st.session_state["prediction_RestingECG"]),
                 format_func=lambda value: CATEGORY_LABELS["RestingECG"][value],
+                key="prediction_RestingECG",
             )
 
         fourth_row = st.columns(2)
@@ -465,13 +572,17 @@ def render_prediction() -> None:
             exercise_angina = st.selectbox(
                 "ExerciseAngina",
                 options=list(CATEGORY_LABELS["ExerciseAngina"]),
+                index=list(CATEGORY_LABELS["ExerciseAngina"]).index(st.session_state["prediction_ExerciseAngina"]),
                 format_func=lambda value: CATEGORY_LABELS["ExerciseAngina"][value],
+                key="prediction_ExerciseAngina",
             )
         with fourth_row[1]:
             st_slope = st.selectbox(
                 "ST_Slope",
                 options=list(CATEGORY_LABELS["ST_Slope"]),
+                index=list(CATEGORY_LABELS["ST_Slope"]).index(st.session_state["prediction_ST_Slope"]),
                 format_func=lambda value: CATEGORY_LABELS["ST_Slope"][value],
+                key="prediction_ST_Slope",
             )
 
         submitted = st.form_submit_button(
