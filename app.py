@@ -274,7 +274,7 @@ st.markdown(
     <section class="hero">
         <div class="eyebrow">Checkup data classification demo</div>
         <h1>CardioRisk AI</h1>
-        <p>A transparent, educational interface for the HeartDisease dataset model.</p>
+        <p>CardioRisk AI is a machine-learning assistant that helps doctors assess a patient’s potential heart disease risk using symptoms and measurements.</p>
     </section>
     """,
     unsafe_allow_html=True,
