@@ -287,7 +287,7 @@ with st.sidebar:
     st.caption("Heart disease dataset classification")
     page = st.radio(
         "Navigate",
-        ["Project Overview", "Prediction"],
+        ["Project Overview", "Prediction", "Guide"],
         label_visibility="collapsed",
     )
     st.divider()
@@ -400,30 +400,35 @@ def render_overview() -> None:
         "simple project defaults and are not medically validated."
     )
 
-    with st.expander("A short guide to the terms"):
-        st.markdown(
-            """
-            - **ChestPainType:** the dataset's category for chest-pain presentation:
-              TA (typical angina), ATA (atypical angina), NAP (non-anginal pain), or
-              ASY (asymptomatic).
-            - **RestingBP:** resting blood pressure recorded in the dataset, in mmHg.
-            - **Cholesterol:** the dataset's serum cholesterol measurement, in mg/dL.
-            - **FastingBS:** a dataset indicator for fasting blood sugar above
-              120 mg/dL (1 = yes, 0 = no).
-            - **RestingECG:** the dataset's resting ECG category. LVH means
-              left ventricular hypertrophy; ST is the dataset's ST-T abnormality
-              category; Normal is the normal category.
-            - **MaxHR:** the maximum heart rate recorded during the exercise test.
-            - **ExerciseAngina:** whether exercise-induced angina was recorded.
-            - **Oldpeak:** ST depression during exercise compared with rest.
-            - **ST_Slope:** the Up, Flat, or Down category for the peak exercise
-              ST segment slope.
-            """
-        )
-        st.caption(
-            "These short descriptions explain dataset fields; they are not "
-            "interpretations of an individual's health."
-        )
+
+
+
+def render_guide() -> None:
+    st.subheader("Guide to the terms")
+    st.write("These descriptions explain fields used by the model.")
+    st.markdown(
+        """
+        - **ChestPainType:** the dataset's category for chest-pain presentation:
+          TA (typical angina), ATA (atypical angina), NAP (non-anginal pain), or
+          ASY (asymptomatic).
+        - **RestingBP:** resting blood pressure recorded in the dataset, in mmHg.
+        - **Cholesterol:** the dataset's serum cholesterol measurement, in mg/dL.
+        - **FastingBS:** a dataset indicator for fasting blood sugar above
+          120 mg/dL (1 = yes, 0 = no).
+        - **RestingECG:** the dataset's resting ECG category. LVH means
+          left ventricular hypertrophy; ST is the dataset's ST-T abnormality
+          category; Normal is the normal category.
+        - **MaxHR:** the maximum heart rate recorded during the exercise test.
+        - **ExerciseAngina:** whether exercise-induced angina was recorded.
+        - **Oldpeak:** ST depression during exercise compared with rest.
+        - **ST_Slope:** the Up, Flat, or Down category for the peak exercise
+          ST segment slope.
+        """
+    )
+    st.caption(
+        "These short descriptions explain dataset fields; they are not "
+        "interpretations of an individual's health."
+    )
 
 
 def render_prediction() -> None:
@@ -697,5 +702,7 @@ def render_prediction() -> None:
 
 if page == "Project Overview":
     render_overview()
-else:
+elif page == "Prediction":
     render_prediction()
+else:
+    render_guide()
