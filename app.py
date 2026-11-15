@@ -351,9 +351,12 @@ def render_overview() -> None:
 
     st.markdown("### Real-world problem this explores")
     st.write(
-        "The project explores whether routinely recorded checkup data can help "
-        "organize example records for further review. This prototype has not been "
-        "validated to prioritize real people or support medical decisions."
+        "Cardiovascular diseases are the leading cause of death worldwide. For "
+        "doctors, assessing a patient’s potential risk can become difficult "
+        "when having to consider each symptom and measurement together while "
+        "considering each one separately may not reveal the full picture. This "
+        "can make it challenging to identify which patients may need closer "
+        "review or have a higher risk of heart diseases."
     )
 
     st.markdown("### Goals")
