@@ -178,10 +178,15 @@ st.markdown(
         background: var(--cardio-deep-red);
         border-color: var(--cardio-deep-red);
     }
-    [data-testid="stAlert"] {
-        background: var(--cardio-soft-pink);
-        border-color: var(--cardio-pink);
-        color: var(--cardio-deep-red);
+    [data-testid="stAlert"],
+    [data-testid="stAlertContainer"],
+    [data-testid^="stAlertContent"] {
+        background: var(--cardio-soft-pink) !important;
+        border-color: var(--cardio-pink) !important;
+        color: var(--cardio-deep-red) !important;
+    }
+    [data-testid="stAlertContainer"] [data-testid="stMarkdownContainer"] p {
+        color: var(--cardio-deep-red) !important;
     }
     [data-baseweb="select"] > div,
     div[data-testid="stNumberInput"] input {
