@@ -2,6 +2,8 @@
 
 CardioRisk AI is a prototype machine-learning model that uses 11 checkup measurements to predict a patient’s risk level for heart diseases. This project is a prototype and is not medical advice!
 
+**Dataset source:** [Heart Failure Prediction Dataset by fedesoriano on Kaggle](https://www.kaggle.com/datasets/fedesoriano/heart-failure-prediction).
+
 The prediction output groups the model's score for label 1 into Low, Medium, and High bands. The CSV does not contain three risk labels, so these bands are applied to the score after training; they are not three classes learned by the model. The cutoffs are project score bands and are not clinically validated risk thresholds.
 
 ## Features used
