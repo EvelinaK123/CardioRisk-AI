@@ -315,14 +315,18 @@ def score_band(score: float) -> str:
 def render_overview() -> None:
     st.subheader("Project Overview")
     st.write(
-        "CardioRisk AI is a prototype machine-learning project. It uses 11 "
-        "checkup-style measurements to predict the HeartDisease label found in "
-        "the training dataset: 0 means the label is absent and 1 means it is present."
+        "CardioRisk AI looks at 11 health measurements, including age, blood "
+        "pressure, cholesterol, symptoms, and exercise-related information. It "
+        "uses patterns from its training data to estimate whether a set of "
+        "measurements may be associated with heart disease."
     )
     st.write(
-        "The model is trained on two dataset labels. The Low, Medium, and High "
-        "levels shown by this interface are score bands applied after training; "
-        "they are not three classes learned by the model."
+        "The model groups its result into low, medium, or high heart disease "
+        "risk cases. These categories are part of this prototype and have not "
+        "been medically validated. CardioRisk AI cannot diagnose heart disease; "
+        "its result should be considered by a medical professional alongside "
+        "other information to offer an additional point of reference when "
+        "deciding whether a case may need closer attention."
     )
 
     card1, card2, card3 = st.columns(3)
