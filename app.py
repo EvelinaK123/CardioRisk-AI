@@ -68,9 +68,16 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    :root {
+        --cardio-pink: #fab9bd;
+        --cardio-red: #a92132;
+        --cardio-deep-red: #861a29;
+        --cardio-soft-pink: #fff2f3;
+        --cardio-text: #3f2529;
+    }
     .stApp {
-        background: #f3f7f8;
-        color: #17324a;
+        background: #ffffff;
+        color: var(--cardio-text);
     }
     .main .block-container {
         max-width: 1120px;
@@ -78,16 +85,17 @@ st.markdown(
         padding-bottom: 3rem;
     }
     [data-testid="stSidebar"] {
-        background: #eaf2f4;
-        border-right: 1px solid #d5e4e8;
+        background: var(--cardio-soft-pink);
+        border-right: 1px solid var(--cardio-pink);
     }
     .hero {
         padding: 1.8rem 2rem;
         border-radius: 22px;
-        background: linear-gradient(115deg, #123a5a, #0e6d73);
+        background: linear-gradient(115deg, var(--cardio-deep-red), #bd3445);
         color: #ffffff;
         margin-bottom: 1.1rem;
-        box-shadow: 0 12px 32px rgba(20, 59, 83, 0.13);
+        box-shadow: 0 12px 32px rgba(134, 26, 41, 0.16);
+        border-bottom: 5px solid var(--cardio-pink);
     }
     .hero h1 {
         color: #ffffff;
@@ -95,38 +103,41 @@ st.markdown(
         font-size: 2.25rem;
     }
     .hero p {
-        color: #e1f4f2;
+        color: #fff0f1;
         margin: 0;
         font-size: 1.05rem;
     }
     .eyebrow {
-        color: #b8e7df;
+        color: #ffdadd;
         font-size: 0.78rem;
         font-weight: 700;
         letter-spacing: 0.12em;
         text-transform: uppercase;
     }
+    h2, h3 {
+        color: var(--cardio-deep-red);
+    }
     .info-card {
         background: #ffffff;
-        border: 1px solid #dce8eb;
+        border: 1px solid var(--cardio-pink);
         border-radius: 16px;
         padding: 1.05rem 1.15rem;
         min-height: 112px;
-        box-shadow: 0 4px 14px rgba(20, 59, 83, 0.04);
+        box-shadow: 0 4px 14px rgba(169, 33, 50, 0.06);
     }
     .info-card strong {
         display: block;
-        color: #164e67;
+        color: var(--cardio-red);
         font-size: 1.45rem;
         margin-bottom: 0.3rem;
     }
     .info-card span {
-        color: #526b7b;
+        color: #62484b;
         font-size: 0.92rem;
     }
     .section-card {
         background: #ffffff;
-        border: 1px solid #dce8eb;
+        border: 1px solid var(--cardio-pink);
         border-radius: 16px;
         padding: 1.1rem 1.25rem;
         margin: 0.55rem 0 1rem 0;
@@ -135,8 +146,9 @@ st.markdown(
         border-radius: 18px;
         padding: 1.35rem 1.5rem;
         margin: 0.8rem 0 1rem 0;
-        border: 1px solid #c7dfe1;
+        border: 1px solid var(--cardio-pink);
         background: #ffffff;
+        box-shadow: 0 6px 18px rgba(169, 33, 50, 0.06);
     }
     .risk-card h2 {
         margin: 0.15rem 0 0.35rem 0;
@@ -144,9 +156,9 @@ st.markdown(
     }
     .risk-low { color: #16705d; }
     .risk-medium { color: #9b6500; }
-    .risk-high { color: #a53642; }
+    .risk-high { color: var(--cardio-red); }
     .small-label {
-        color: #5d7482;
+        color: #70484d;
         font-size: 0.83rem;
         text-transform: uppercase;
         font-weight: 700;
@@ -154,8 +166,8 @@ st.markdown(
     }
     div.stButton > button[kind="primary"],
     div.stFormSubmitButton > button[kind="primary"] {
-        background: #0e6d73;
-        border-color: #0e6d73;
+        background: var(--cardio-red);
+        border-color: var(--cardio-red);
         color: #ffffff;
         border-radius: 10px;
         min-height: 2.8rem;
@@ -163,8 +175,32 @@ st.markdown(
     }
     div.stButton > button[kind="primary"]:hover,
     div.stFormSubmitButton > button[kind="primary"]:hover {
-        background: #0a555b;
-        border-color: #0a555b;
+        background: var(--cardio-deep-red);
+        border-color: var(--cardio-deep-red);
+    }
+    [data-testid="stAlert"] {
+        background: var(--cardio-soft-pink);
+        border-color: var(--cardio-pink);
+        color: var(--cardio-deep-red);
+    }
+    [data-baseweb="select"] > div,
+    div[data-testid="stNumberInput"] input {
+        background: #ffffff;
+        border-color: var(--cardio-pink);
+    }
+    input:focus,
+    [data-baseweb="select"] > div:focus-within {
+        border-color: var(--cardio-red);
+        box-shadow: 0 0 0 0.15rem rgba(250, 185, 189, 0.42);
+    }
+    div[data-testid="stMetricValue"] {
+        color: var(--cardio-red);
+    }
+    a {
+        color: var(--cardio-red);
+    }
+    a:hover {
+        color: var(--cardio-deep-red);
     }
     </style>
     """,
