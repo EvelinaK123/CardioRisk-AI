@@ -16,7 +16,7 @@ The code uses the category values found in the CSV. Text fields such as Sex and 
 
 1. Open the repository, click the **Code** button, and download the ZIP file.
 2. Open the ZIP file and extract the `CardioRisk-AI-main` folder.
-3. Click the address bar, type `powershell`, and press Enter. The prompt should end with `CardioRisk-AI-main>`. If it says only `PS C:\\>`, PowerShell is in the wrong folder.
+3. Click the address bar, type `powershell`, and press Enter. The prompt should end with `CardioRisk-AI-main>`. If it says only `PS C:\>`, PowerShell is in the wrong folder.
 4. The model was tested with Python 3.14. If you do not have it and use the Python install manager, type this command first:
 
 ```powershell
