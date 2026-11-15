@@ -362,10 +362,10 @@ def render_overview() -> None:
     st.markdown("### Goals")
     st.markdown(
         """
-        - Show how a classification model can use numeric and text-category fields together.
-        - Reuse the same saved preprocessing-and-model pipeline for predictions.
-        - Present the model's dataset-label score in simple Low, Medium, and High bands.
-        - Make the model's limits clear alongside its output.
+        - Combine 11 health measurements to identify patterns that may be associated with heart disease.
+        - Present the model’s estimate in clear low, medium, and high categories.
+        - Evaluate the model’s predictions and review cases it classifies incorrectly.
+        - Develop the prototype as a decision-support aid for medical professionals.
         """
     )
 
