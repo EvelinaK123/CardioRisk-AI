@@ -12,138 +12,120 @@ Age, Sex, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG, MaxHR, E
 
 The code uses the category values found in the CSV. Text fields such as Sex and ChestPainType are treated as categorical data and encoded inside a scikit-learn pipeline. The same fitted pipeline is used for training and prediction.
 
-## Run in GitHub Codespaces
+## Run locally (Windows - PowerShell)
 
+1. Open the repository, click the **Code** button, and download the ZIP file.
+2. Open the ZIP file and extract the `CardioRisk-AI-main` folder.
+3. Click the address bar, type `powershell`, and press Enter. The prompt should end with `CardioRisk-AI-main>`. If it says only `PS C:\\>`, PowerShell is in the wrong folder.
+4. The model was tested with Python 3.14. If you do not have it and use the Python install manager, type this command first:
 
-1. On GitHub, open this repository and choose Code, then Codespaces, then open a Codespace on main.
-2. In the Codespace Explorer, make a data folder if it is not there. Upload your private heart.csv file into that folder as data/heart.csv. Keep the original file name.
-3. Open the integrated terminal at the repository root and run:
+```powershell
+py install 3.14
+```
 
-    python -m pip install -r requirements.txt
-    python src/eda.py --input data/heart.csv
-    python src/train.py --input data/heart.csv --test-size 0.20 --random-state 42
-
-The Codespaces dev-container configuration installs the requirements when a new Codespace is created or rebuilt. The explicit install command above also works in an existing Codespace.
-
-The EDA script writes reports/eda_report.md before training begins. Training compares Logistic Regression and Random Forest using cross-validation on the training portion only. It then selects one model, fits that complete preprocessing-and-model pipeline on the training portion, and evaluates it once on the held-out test portion.
-
-4. To try the prediction script with fictional examples, run:
-
-    python src/predict.py --input data/sample_input_fictional.csv --output reports/sample_predictions.csv
-
-The input CSV for prediction does not need a HeartDisease column. The sample file contains fictional values and has no target column.
-
-
-To predict from your file,create a csv file with these columns : 
-
-
-(Age,Sex,ChestPainType,RestingBP,Cholesterol,FastingBS,RestingECG,MaxHR,
-ExerciseAngina,Oldpeak,ST_Slope)enter the values,and name it : my_new_rows.csv, place it in the data folder in the Codespace and run:
-
-git pull origin main 
-
-THEN
-
-
-python src/predict.py --input data/my_new_rows.csv --output reports/my_predictions.csv
-
-To see the predictions open the: reports/my_predictions.csv in the left Explorer panel.
-
-## Run locally on a computer
-
-The repository includes the fitted pipeline at `models/heart_disease_pipeline.joblib`, so you can make predictions without the training CSV. The training file `data/heart.csv` is not included. You only need it if you want to inspect and train the model again.
-
-### Windows PowerShell
-
-1. On GitHub, choose **Code > Download ZIP**, then extract the ZIP.
-2. In File Explorer, open the extracted `CardioRisk-AI-main` folder. Click the address bar, type `powershell`, and press Enter. The prompt should end with `CardioRisk-AI-main>`, not just `PS C:\>`.
-3. Use Python 3.14. If it is not installed and you have the Python install manager, run `py install 3.14`.
-4. Run these commands one at a time from the project folder:
+5. Check the Python version:
 
 ```powershell
 py -3.14 --version
+```
+
+6. Run the following commands one at a time, in order, to create the environment and install the packages:
+
+```powershell
 py -3.14 -m venv .venv-local314
+```
+
+```powershell
 .\.venv-local314\Scripts\python.exe -m pip install --upgrade pip
+```
+
+```powershell
 .\.venv-local314\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
-5. Check that the saved pipeline is present. It should print `True`:
+7. Check that the saved model file is present:
 
 ```powershell
 Test-Path .\models\heart_disease_pipeline.joblib
 ```
 
-6. Try the fictional example:
+8. To make a prediction, try the existing fictional example. This is one command:
 
 ```powershell
 .\.venv-local314\Scripts\python.exe src\predict.py --input data\sample_input_fictional.csv --output reports\sample_predictions.csv
 ```
 
-Open `reports\sample_predictions.csv` to view the results.
+9. To see the prediction, open `reports/sample_predictions.csv` in the project folder.
 
-To predict your own cases, save a CSV as `data\my_new_rows.csv` with these 11 columns and no `HeartDisease` column:
+## Run locally (Linux or macOS)
 
-```csv
-Age,Sex,ChestPainType,RestingBP,Cholesterol,FastingBS,RestingECG,MaxHR,ExerciseAngina,Oldpeak,ST_Slope
-```
-
-Use the category values from the training CSV, such as `M`/`F`, `ASY`/`ATA`/`NAP`/`TA`, `Normal`/`ST`/`LVH`, `Y`/`N`, and `Up`/`Flat`/`Down`. Then run:
-
-```powershell
-.\.venv-local314\Scripts\python.exe src\predict.py --input data\my_new_rows.csv --output reports\my_predictions.csv
-```
-
-### Linux and macOS
-
-1. Download and extract the repository ZIP.
-2. Open a terminal in the extracted `CardioRisk-AI-main` folder.
-3. Use Python 3.14. If you use Python 3.12 instead, replace `python3.14` below with `python3.12`.
-
-Run each command from the project folder:
+1. Open the repository, choose **Code**, and download the ZIP file.
+2. Extract the ZIP file to get the `CardioRisk-AI-main` folder.
+3. Open Terminal in that folder. The current directory should be `CardioRisk-AI-main`.
+4. Use Python 3.14. If you use Python 3.12 instead, replace `python3.14` below with `python3.12`. If Python 3.14 is not installed, install it for your operating system first.
+5. Run each command one at a time to create the environment and install the packages:
 
 ```bash
 python3.14 --version
-python3.14 -m venv .venv
-source .venv/bin/activate
+```
+
+```bash
+python3.14 -m venv .venv-local314
+```
+
+```bash
+source .venv-local314/bin/activate
+```
+
+```bash
 python -m pip install --upgrade pip
+```
+
+```bash
 python -m pip install -r requirements.txt
 ```
 
-Try the fictional example:
+6. Check that the saved model file is present:
+
+```bash
+test -f models/heart_disease_pipeline.joblib && echo "Model file found"
+```
+
+7. To make a prediction, try the existing fictional example. This is one command:
 
 ```bash
 python src/predict.py --input data/sample_input_fictional.csv --output reports/sample_predictions.csv
 ```
 
-For your own cases, save the 11-column CSV as `data/my_new_rows.csv` without a `HeartDisease` column, then run:
+8. Open `reports/sample_predictions.csv` in the project folder to see the prediction.
+
+## Predict with your own CSV
+
+Create `data/my_new_rows.csv` with these 11 predictor columns and no `HeartDisease` column:
+
+```csv
+Age,Sex,ChestPainType,RestingBP,Cholesterol,FastingBS,RestingECG,MaxHR,ExerciseAngina,Oldpeak,ST_Slope
+```
+
+Run the command for your operating system:
+
+**Windows PowerShell**
+
+```powershell
+.\.venv-local314\Scripts\python.exe src\predict.py --input data\my_new_rows.csv --output reports\my_predictions.csv
+```
+
+**Linux or macOS**
 
 ```bash
 python src/predict.py --input data/my_new_rows.csv --output reports/my_predictions.csv
 ```
 
-The results are saved in `reports/my_predictions.csv`.
+Open `reports/my_predictions.csv` to see the predictions.
 
-### iPhone or iPad (iOS)
+## Run in the app
 
-iOS does not use the local PowerShell or Python commands above. To try an individual prediction on an iPhone or iPad, open the [CardioRisk AI web app](https://cardiorisk-ai-predictionmodel.streamlit.app/#cardio-risk-ai) in Safari, open its Prediction page, enter the measurements, and submit the form. The command-line script for predicting from a CSV must be run on a computer.
-
-### Train the model again (optional)
-
-The training CSV is not included in the ZIP. To rerun EDA and training, place your authorized labeled CSV at `data/heart.csv`. From Windows PowerShell, run:
-
-```powershell
-.\.venv-local314\Scripts\python.exe src\eda.py --input data\heart.csv
-.\.venv-local314\Scripts\python.exe src\train.py --input data\heart.csv --test-size 0.20 --random-state 42
-```
-
-On Linux or macOS, first activate the `.venv` as shown above, then run:
-
-```bash
-python src/eda.py --input data/heart.csv
-python src/train.py --input data/heart.csv --test-size 0.20 --random-state 42
-```
-
-Training saves a new fitted pipeline and evaluation reports locally.
+[CardioRisk AI web app](https://cardiorisk-ai-predictionmodel.streamlit.app/#cardio-risk-ai)
 
 ## What the scripts do
 
