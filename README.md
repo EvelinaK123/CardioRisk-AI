@@ -1,11 +1,8 @@
 # CardioRisk AI — Heart Disease Classification
 
-This is a beginner-friendly machine-learning project for the GitHub repository CardioRisk-AI. It trains a classifier to predict the **HeartDisease label in this CSV dataset**:
+CardioRisk AI is a prototype machine-learning model that uses 11 checkup measurements to predict a patient’s risk level for heart diseases. This project is a prototype and is not medical advice!
 
-- 1 means the dataset label is present.
-- 0 means the dataset label is absent.
-
-The model is trained on a binary target and predicts the dataset's HeartDisease label. The prediction output also groups the model's score for label 1 into Low, Medium, and High bands. The CSV does not contain three risk labels, so these bands are applied to the score after training; they are not three classes learned by the model. The cutoffs are project score bands and are not clinically validated risk thresholds.
+The prediction output groups the model's score for label 1 into Low, Medium, and High bands. The CSV does not contain three risk labels, so these bands are applied to the score after training; they are not three classes learned by the model. The cutoffs are project score bands and are not clinically validated risk thresholds.
 
 ## Features used
 
@@ -13,13 +10,12 @@ The CSV contains these 11 matching predictor columns:
 
 Age, Sex, ChestPainType, RestingBP, Cholesterol, FastingBS, RestingECG, MaxHR, ExerciseAngina, Oldpeak, and ST_Slope.
 
-The project does not use ca (number of major vessels) or thal (perfusion category). Those columns are not in this CSV. They are not fabricated, estimated, or required.
-
-The code uses the category values found in the CSV. Text fields such as Sex and ChestPainType are treated as categorical data and encoded inside a scikit-learn pipeline. Do not manually convert them to numeric codes. The same fitted pipeline is used for training and prediction.
+The code uses the category values found in the CSV. Text fields such as Sex and ChestPainType are treated as categorical data and encoded inside a scikit-learn pipeline. The same fitted pipeline is used for training and prediction.
 
 ## Run in GitHub Codespaces
 
-1. On GitHub, open this repository and choose Code, then Codespaces, then create or open a Codespace on main.
+
+1. On GitHub, open this repository and choose Code, then Codespaces, then open a Codespace on main.
 2. In the Codespace Explorer, make a data folder if it is not there. Upload your private heart.csv file into that folder as data/heart.csv. Keep the original file name.
 3. Open the integrated terminal at the repository root and run:
 
@@ -37,36 +33,26 @@ The EDA script writes reports/eda_report.md before training begins. Training com
 
 The input CSV for prediction does not need a HeartDisease column. The sample file contains fictional values and has no target column.
 
-To predict from your own unlabeled file, place it in the Codespace and run:
 
-    python src/predict.py --input data/my_new_rows.csv --output reports/my_predictions.csv
+To predict from your file,create a csv file with these columns : 
 
-## Optional local commands
 
-The primary workflow is Codespaces. If you later choose to run a clone on your own computer, use the commands for your shell from the repository root.
+(Age,Sex,ChestPainType,RestingBP,Cholesterol,FastingBS,RestingECG,MaxHR,
+ExerciseAngina,Oldpeak,ST_Slope)enter the values,and name it : my_new_rows.csv, place it in the data folder in the Codespace and run:
 
-### Windows PowerShell
+git pull origin main 
 
-    py -m venv .venv
-    .\.venv\Scripts\Activate.ps1
-    python -m pip install -r requirements.txt
-    python src\eda.py --input data\heart.csv
-    python src\train.py --input data\heart.csv --test-size 0.20 --random-state 42
-    python src\predict.py --input data\sample_input_fictional.csv --output reports\sample_predictions.csv
+THEN
 
-### macOS or Linux
 
-    python3 -m venv .venv
-    source .venv/bin/activate
-    python -m pip install -r requirements.txt
-    python src/eda.py --input data/heart.csv
-    python src/train.py --input data/heart.csv --test-size 0.20 --random-state 42
-    python src/predict.py --input data/sample_input_fictional.csv --output reports/sample_predictions.csv
+python src/predict.py --input data/my_new_rows.csv --output reports/my_predictions.csv
+
+To see the predictions open the: reports/my_predictions.csv in the left Explorer panel.
 
 ## What the scripts do
 
 - src/eda.py checks the expected column names, data types, missing values, exact duplicate rows, target balance, observed category values, numeric summaries, and suspicious values. It reports zero values in Cholesterol and zero values in RestingBP separately.
-- src/train.py creates a stratified train/test split. Stratified means both portions keep roughly the same class balance as the source data. It compares the two models with cross-validation using only the training portion, selects by mean training cross-validation balanced accuracy, fits the selected pipeline on all training rows, and evaluates on the held-out test rows.
+- src/train.py creates a train/test split. Both portions keep roughly the same class balance as the source data. It compares the two models with cross-validation using only the training portion, selects by mean training cross-validation balanced accuracy, fits the selected pipeline on all training rows, and evaluates on the held-out test rows.
 - src/predict.py loads the saved pipeline, checks that the 11 predictor columns are present, predicts the dataset label, and writes a results CSV. The output includes the binary class, the score for label 1 when available, and a Low/Medium/High risk_band when the pipeline returns probabilities. Additional input columns are ignored by the model.
 - .devcontainer/devcontainer.json configures a Python Codespace and installs the project requirements.
 - requirements.txt lists the Python libraries needed by the scripts.
@@ -94,25 +80,15 @@ The prediction CSV adds a `risk_band` column using the model's score for dataset
 
 Exactly 0.33 is Medium; exactly 0.67 is High. The model itself still learns the two available target classes, 0 and 1. These three bands are applied afterward to organize the model score; the dataset contains no Low/Medium/High training labels. `predicted_HeartDisease` is still the binary class produced by the model's standard 0.50 cutoff, so it can differ from the three-band label. The cutoffs are simple project score bands, not clinically validated risk thresholds.
 
-## Reading the evaluation
 
-Training writes reports/model_comparison.json, reports/test_metrics.json, and reports/evaluation_report.md. It also saves the selected full pipeline at models/heart_disease_pipeline.joblib.
+##Model evaluation and errors
+Before training, the EDA report checked column names, data types, missing values, duplicate rows, target balance, category values, and suspicious values. The CSV had 918 rows: 410 with HeartDisease label 0 and 508 with label 1. No exact duplicate rows were found. The report noted 172 zero values in Cholesterol and one zero in RestingBP; these values were kept unchanged.
+The model comparison used cross-validation on the training portion only. Random Forest had a mean cross-validation balanced accuracy of 0.850 (SD 0.046), compared with 0.847 (SD 0.049) for Logistic Regression, so Random Forest was selected. On the held-out test set of 184 rows, the selected model had 0.908 accuracy, 0.904 balanced accuracy, 0.897 precision, 0.941 recall/sensitivity, 0.866 specificity, 0.919 F1, and 0.933 ROC-AUC. A majority-class baseline that predicts label 1 for every row would have 0.554 accuracy and 0.500 balanced accuracy on this test split.
+The confusion matrix, with actual labels 0 and 1 as rows and predicted labels 0 and 1 as columns, was [[71, 11], [6, 96]]. This means there were 11 false positives—rows with dataset label 0 predicted as 1—and 6 false negatives—rows with dataset label 1 predicted as 0. False positives and false negatives may have occurred because some rows with different HeartDisease labels had similar values across the 11 predictors, making them difficult for the model to distinguish.
+The model handles numbers and categories the same way during training and prediction. The risk_band column groups the score for label 1 into Low (<0.33), Medium (0.33 to below 0.67), and High (0.67 or above). These are project score bands; the model was trained on the two HeartDisease labels, not three risk categories. We have not checked probability calibration, performance across age or sex groups, or performance on a separate dataset. A high score on this test split does not establish clinical usefulness. 
 
-The model comparison report contains training cross-validation results for both candidates. The final test metrics are for the selected model and the held-out test set.
 
-- Accuracy is the fraction of test rows classified correctly.
-- Balanced accuracy averages recall across the two labels, so it is useful when the labels are not evenly represented.
-- Precision answers: among rows predicted as label 1, what fraction actually have dataset label 1?
-- Recall or sensitivity answers: among rows whose dataset label is 1, what fraction were found?
-- Specificity answers: among rows whose dataset label is 0, what fraction were found?
-- F1 combines precision and recall.
-- ROC-AUC measures ranking across thresholds and is reported when both test labels are present.
-- The confusion matrix is ordered as actual labels 0 then 1, with predicted labels 0 then 1. Its cells are true negatives, false positives, false negatives, and true positives.
 
-For this dataset, a false positive is a row with label 0 that the model predicts as 1. A false negative is a row with label 1 that the model predicts as 0. These describe classification errors against this dataset’s labels; they are not clinical conclusions. A high score does not prove clinical usefulness.
 
-## Keeping data and model private
 
-Do not add data/heart.csv or models/heart_disease_pipeline.joblib to a commit. .gitignore excludes them by default. The generated EDA and evaluation reports contain aggregate summaries, not copied source rows. Review any generated file before choosing to publish it.
 
-The dataset and model are not included in this repository. The Codespace stores files in its own workspace; be careful not to commit private files when synchronizing changes.
